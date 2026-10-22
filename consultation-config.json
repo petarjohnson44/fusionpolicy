@@ -1,0 +1,35 @@
+{
+  "version": "2026-10-22",
+  "program": "First priority policy consultation and approval ballot round",
+  "timezone": "Australia/Sydney",
+  "openingInclusiveUtc": "2026-10-25T13:00:00.000Z",
+  "closingExclusiveUtc": "2026-11-26T13:00:00.000Z",
+  "dateLabel": "26 October – 26 November 2026 (AEDT)",
+  "scope": "Each proposal in the four priority policy areas has its own approval selection; the areas group individual policy ballots.",
+  "areas": [
+    {
+      "domain": "Solve the Housing Crisis",
+      "link": "https://reclaim.fusionparty.org.au/reclaim-our-economy/solve-the-housing-crisis/"
+    },
+    {
+      "domain": "Renew Our Democracy",
+      "link": "https://reclaim.fusionparty.org.au/reclaim-our-future/renew-our-democracy/"
+    },
+    {
+      "domain": "Build up Small Businesses",
+      "link": "https://reclaim.fusionparty.org.au/reclaim-our-economy/build-up-small-businesses/"
+    },
+    {
+      "domain": "Rebuild Our Communities",
+      "link": "https://reclaim.fusionparty.org.au/reclaim-our-future/rebuild-our-communities/"
+    }
+  ],
+  "meeting": {
+    "date": "Sunday, 29 November 2026",
+    "starts": "18:00",
+    "ends": "20:00",
+    "timezone": "Australia/Sydney",
+    "note": "Policy ballot review and final recommendations to the Executive",
+    "meetLink": null
+  }
+}
