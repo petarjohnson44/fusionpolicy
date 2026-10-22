@@ -47,6 +47,8 @@ jobs:
           assert (config['meeting']['starts'],config['meeting']['ends']) == ('18:00','20:00')
           print('Validated 76 policy proposals, 36 first-round policy ballots, four areas and dates')
           PY
+      - name: Test member preview and ballot routing
+        run: node smoke-test.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload static site
