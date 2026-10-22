@@ -20,11 +20,16 @@ This independent repository implements Policy Consultation and Formal Approval P
 - Re-submit a selection before a demo ballot closes; the last selection counts.
 - Demo scheduling of open and close times, quorum, and threshold; submission-review controls.
 - Demo receipts and administration overview.
+- **Priority highlighting:** administrator demo can flag any policy as a **priority policy** (featured homepage + first in library) and/or a **priority ballot** (featured homepage + first in formal approval queue). Flags are independent and do not alter voting entitlement, deadline, tally or approval thresholds.
+- **Direct admin link:** https://petarjohnson44.github.io/fusionpolicy/#admin — opens the admin demonstration (Priority highlighting tab is selected by default).
+- **Fusion identity:** explicitly described as the *Members-only policy review portal of the Fusion Party of Australia*. Public access restrictions are **not** active in the static preview.
+- **Visual parity:** adapted from the public Reclaim site's current `src/styles/global.css` and `src/styles/editorial.css` — Barlow, Barlow Condensed, Space Mono, white-on-purple surfaces (#1a0029 and #2e004d), magenta (#d428d4), mint (#00ddb8), muted borders and soft shadows.
+
 
 ## Important security and governance limitations
 - There is NO real authentication, database, secure server, member registry or certified vote.
 - The "Admin preview" is open to anyone who can reach the site.
-- Preview submissions and ballot selections are saved only in the current tab's browser sessionStorage; they are not sent to a server.
+- Preview submissions, ballot selections **and priority flags** are saved only in the current tab's browser sessionStorage; they are not sent to a server. Priority flags set in the admin preview are **not shared across members or devices**. Two sample policies are initially highlighted for demonstration, not as authorised party priorities.
 - NEVER enter real member information, personal details, sensitive political data or confidential submissions.
 - Browser-enforced ballot windows are not secure and must NOT be used for genuine voting.
 - Illustrative schedules are generated relative to page open time; they do not reflect real voting dates.
