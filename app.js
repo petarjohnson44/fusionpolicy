@@ -2,10 +2,10 @@
 "use strict";
 const root=document.getElementById("main");
 const STATUS={draft:"Draft",consultation:"Consultation open",review:"Under review",ballot:"Awaiting formal ballot",approved:"Approved",not_approved:"Not approved"};
-let policies=[],state,filters={q:"",domain:"",newOnly:false,priorityOnly:false},adminTab="priorities";
+let policies=[],state,consultationConfig=null,filters={q:"",domain:"",newOnly:false,priorityOnly:false},adminTab="priorities";
 const TODAY=Date.now();
 const toISO=(d)=>new Date(d).toISOString();
-const initial=()=>({submissions:[],votes:{},ballots:{},priorities:{},prioritySeeded:false,member:"Preview Member"});
+const initial=()=>({submissions:[],votes:{},ballots:{},priorities:{},prioritySeeded:false,member:"Preview Member",demoEmail:""});
 function loadState(){try{const v=JSON.parse(sessionStorage.getItem("fusionpolicy-demo-v2")||"null");return v&&Array.isArray(v.submissions)&&v.ballots&&v.votes?v:initial()}catch{return initial()}}
 function save(){sessionStorage.setItem("fusionpolicy-demo-v2",JSON.stringify(state))}
 function escape(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -23,24 +23,33 @@ const newPolicies=()=>policies.filter(p=>p.isNew);
 function domainCount(d){return policies.filter(p=>p.domain===d).length}
 function policyStatus(p){return p.isNew?"Approval required":getBallot(p.id)?"Ballot scheduled":"In policy library"}
 function timeStatus(b){if(!b)return"Not scheduled";const n=Date.now(),open=Date.parse(b.open),close=Date.parse(b.close);if(!Number.isFinite(open)||!Number.isFinite(close))return"Not scheduled";return n<open?"Scheduled":n>=close?"Closed":"Open"}
-function getBallot(id){return state.ballots[id]}
+function isPriorityArea(p){return !!(p&&consultationConfig?.areas?.some(a=>a.domain===p.domain))}
+function configuredWindow(p){return isPriorityArea(p)?{open:consultationConfig.openingInclusiveUtc,close:consultationConfig.closingExclusiveUtc,threshold:50,quorum:0,demo:true,configured:true}:null}
+function getBallot(id){return configuredWindow(policyById(id))||state.ballots[id]}
+function endLabel(b){return b?.configured?"26 Nov 2026, 11:59 pm AEDT":niceDate(b?.close)}
+function openLabel(b){return b?.configured?"26 Oct 2026, 12:00 am AEDT":niceDate(b?.open)}
+function ballotAreaList(){return consultationConfig?.areas||[]}
+function ballotAreaCards(){
+ return '<div class="priority-area-grid">'+ballotAreaList().map((a,i)=>{
+ const n=policies.filter(p=>p.domain===a.domain).length;
+ return '<article class="priority-area-card"><div class="tags"><span class="pill priority">PRIORITY BALLOT AREA 0'+(i+1)+'</span><span class="pill gray">'+n+' policy proposals</span></div><h3>'+escape(a.domain)+'</h3><div class="date-band"><span><strong>OPENS</strong>26 OCT 2026</span><span><strong>CLOSES</strong>26 NOV 2026</span></div><div class="form-actions"><a class="btn mint" href="#ballots?domain='+encodeURIComponent(a.domain)+'">Review ballots →</a><a class="btn ghost" href="'+escape(a.link)+'" target="_blank" rel="noopener noreferrer">Reclaim source ↗</a></div></article>'
+ }).join("")+'</div>';
+}
+function memberGate(){
+ return '<section class="access-gate"><span class="eyebrow">FUSION PARTY OF AUSTRALIA · MEMBERS-ONLY PORTAL</span><h1>POLICY REVIEW AND BALLOTS</h1><p>This is the Fusion Party of Australia members-only portal for reviewing draft policies, providing comments and amendments, and participating in approval ballots.</p><div class="warning-strip"><strong>PUBLIC PREVIEW:</strong> The membership database is not connected. This is not actual authentication; only a fictitious demonstration account is accepted. No real ballot is recorded.</div><form id="demo-access-form" class="panel"><h2>Member email entry · preview</h2><p class="note">Production sign-in will check registered emails against a private member database and verify mailbox ownership with a one-time code or link. An email address alone does not prove identity.</p><div class="field"><label for="member-email">Email address</label><input id="member-email" type="email" name="email" autocomplete="off" required placeholder="demo.member@fusionpolicy.invalid"></div><div class="form-actions"><button class="btn primary" type="submit">Enter demo portal →</button><button class="btn ghost" type="button" id="fill-demo-email">Use sample email</button></div><p class="note">Fictitious preview email: demo.member@fusionpolicy.invalid</p></form></section>';
+}
 function isPriority(p,kind){return Boolean(p && state && state.priorities && state.priorities[p.id] && state.priorities[p.id][kind])}
 function priorityBadge(p,kind){return isPriority(p,kind)?'<span class="pill priority" title="Demonstration highlight, not an official party designation">★ PRIORITY '+(kind==="ballot"?"BALLOT":"POLICY")+' · DEMO</span>':''}
 function priorityFirst(items,kind){return [...items].sort((a,b)=>Number(isPriority(b,kind))-Number(isPriority(a,kind)))}
 function seedPriorityPreview(){
   if(state.prioritySeeded)return;
   if(!state.priorities||typeof state.priorities!=="object")state.priorities={};
-  const items=newPolicies();
+  const items=policies.filter(p=>isPriorityArea(p));
   if(items[0]&&!state.priorities[items[0].id])state.priorities[items[0].id]={policy:true,ballot:true};
   if(items[1]&&!state.priorities[items[1].id])state.priorities[items[1].id]={policy:false,ballot:true};
   state.prioritySeeded=true;save();
 }
-function defaultDemoBallots(){
-  if(Object.keys(state.ballots).length)return;
-  const list=newPolicies().slice(0,3);
-  list.forEach((p,i)=>{state.ballots[p.id]={open:toISO(TODAY-86400000),close:toISO(TODAY+(i+7)*86400000),threshold:50,quorum:0,demo:true}});
-  save();
-}
+function defaultDemoBallots(){ /* No arbitrary demo ballots: the first four priority areas use configured dates. */ }
 function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("visible");clearTimeout(toast.timeout);toast.timeout=setTimeout(()=>el.classList.remove("visible"),4500)}
 function setActive(route){document.querySelectorAll("[data-nav]").forEach(a=>a.classList.toggle("active",a.dataset.nav===(["policy","contribute"].includes(route)?"library":route==="ballot"?"ballots":route)));}
 function home(){
@@ -173,6 +182,7 @@ function adminRules(){
 function notFound(){return pageHead("NOT FOUND","That page could not be found","Return to the policy library to continue.")+'<a class="btn primary" href="#library">Policy library →</a>'}
 function route(){
  const routeRaw=decodeURIComponent((location.hash||"#home").slice(1));const [main,arg]=routeRaw.split("/");const view=main.split("?")[0];
+ if(!state.demoEmail){root.innerHTML=memberGate();setActive("home");window.scrollTo({top:0,behavior:"instant"});return}
  root.innerHTML=view==="home"||!view?home():view==="library"?library(routeRaw):view==="policy"?policyDetails(arg):view==="contribute"?contribute(arg):view==="ballots"?ballotListing():view==="ballot"?ballotPage(arg):view==="participation"?activity():view==="admin"?admin():notFound();
  setActive(view);
  if(view==="library"){drawList();document.getElementById("search")?.addEventListener("input",e=>{filters.q=e.target.value;drawList()});document.getElementById("domain-filter")?.addEventListener("change",e=>{filters.domain=e.target.value;drawList()});document.getElementById("new-filter")?.addEventListener("change",e=>{filters.newOnly=e.target.value==="new";filters.priorityOnly=e.target.value==="priority";drawList()})}
@@ -183,6 +193,9 @@ function route(){
 function loadScheduleInputs(){
  const el=document.getElementById("schedule-policy");if(!el)return;
  const b=getBallot(el.value);
+ const fixed=!!b?.configured;
+ for(const id of ["opens-at","closes-at","threshold","quorum"]){document.getElementById(id).disabled=fixed}
+ const submit=document.querySelector("#schedule-form button[type=submit]");if(submit){submit.disabled=fixed;submit.title=fixed?"Dates fixed in consultation-config.json":""}
  const open=b?.open||toISO(Date.now()+3600000),close=b?.close||toISO(Date.now()+8*86400000);
  document.getElementById("opens-at").value=inputDate(open);
  document.getElementById("closes-at").value=inputDate(close);
@@ -191,6 +204,11 @@ function loadScheduleInputs(){
 }
 document.addEventListener("submit",ev=>{
  const form=ev.target;
+ if(form.id==="demo-access-form"){
+  ev.preventDefault();const email=String(new FormData(form).get("email")||"").trim().toLowerCase();
+  if(email!=="demo.member@fusionpolicy.invalid"){toast("Please use the fictitious sample email. No membership database is connected yet.");return}
+  state.demoEmail=email;save();route();toast("Entered demonstration mode; identity has not been verified.");return;
+ }
  if(form.id==="priority-form"){
   ev.preventDefault();
   const f=new FormData(form),id=String(f.get("policy")||""),p=policyById(id);
@@ -205,14 +223,14 @@ document.addEventListener("submit",ev=>{
  if(form.id==="contribution-form"){
   ev.preventDefault();const f=new FormData(form),body=String(f.get("body")||"").trim();
   if(body.length<10){toast("Please add a substantive contribution.");return}
-  const item={id:"DEMO-S"+String(state.submissions.length+1).padStart(4,"0"),policy:form.dataset.policy,type:String(f.get("type")),body,why:String(f.get("why")||"").trim(),at:toISO(Date.now()),status:"Pending"};
+  const item={id:"DEMO-S"+String(state.submissions.length+1).padStart(4,"0"),policy:form.dataset.policy,type:String(f.get("type")),body,why:String(f.get("why")||"").trim(),at:toISO(Date.now()),status:"Pending",demoEmail:state.demoEmail};
   state.submissions.push(item);save();location.hash="#participation";toast("Demonstration submission recorded in this tab.");return;
  }
  if(form.id==="schedule-form"){
   ev.preventDefault();const f=new FormData(form),id=String(f.get("policy")),start=new Date(String(f.get("open"))),end=new Date(String(f.get("close"))),threshold=Number(f.get("threshold")),quorum=Number(f.get("quorum"));
   if(!id||!Number.isFinite(+start)||!Number.isFinite(+end)||end<=start){toast("Choose a valid opening and later closing time.");return}
   if(threshold<1||threshold>100||quorum<0||quorum>100){toast("Check the threshold and quorum percentages.");return}
-  const old=getBallot(id);if(old&&timeStatus(old)==="Closed"){toast("Closed ballots cannot be reopened; create a new production ballot instead.");return}
+  const old=getBallot(id);if(old?.configured){toast("The four published priority-area dates are fixed in the consultation configuration.");return}if(old&&timeStatus(old)==="Closed"){toast("Closed ballots cannot be reopened; create a new production ballot instead.");return}
   if(old&&timeStatus(old)==="Open"&&Object.prototype.hasOwnProperty.call(state.votes,id)){toast("Cannot change the window of a demo ballot after a vote exists.");return}
   state.ballots[id]={open:start.toISOString(),close:end.toISOString(),threshold,quorum,demo:true};save();route();toast("Demonstration ballot schedule saved.");return;
  }
@@ -227,7 +245,7 @@ document.addEventListener("submit",ev=>{
   document.getElementById("confirm-demo-vote").addEventListener("click",()=>{
    if(timeStatus(getBallot(p.id))!=="Open"){toast("Voting window has closed.");route();return}
    const prev=state.votes[p.id];
-   state.votes[p.id]={choice,reason:choice==="reject"?reason:"",at:toISO(Date.now()),receipt:prev?.receipt||("DEMO-V"+Math.random().toString(36).slice(2,10).toUpperCase()),changes:(prev?.changes||0)+(prev?1:0)};
+   state.votes[p.id]={choice,reason:choice==="reject"?reason:"",at:toISO(Date.now()),receipt:prev?.receipt||("DEMO-V"+Math.random().toString(36).slice(2,10).toUpperCase()),demoEmail:state.demoEmail,changes:(prev?.changes||0)+(prev?1:0)};
    save();route();toast("Demonstration vote recorded. No real ballot was cast.");
   });return;
  }
@@ -243,6 +261,8 @@ document.addEventListener("change",ev=>{
  if(ev.target.id==="priority-policy")loadPriorityInputs();
 });
 document.addEventListener("click",ev=>{
+ const fill=ev.target.closest("#fill-demo-email");if(fill){const e=document.getElementById("member-email");if(e){e.value="demo.member@fusionpolicy.invalid";e.focus()}return}
+ const exit=ev.target.closest("#exit-demo");if(exit){state.demoEmail="";save();route();toast("Exited demonstration account.");return}
  const tab=ev.target.closest("[data-admin-tab]");if(tab){adminTab=tab.dataset.adminTab;route();return}
  const edit=ev.target.closest("[data-edit-schedule]");if(edit){const el=document.getElementById("schedule-policy");el.value=edit.dataset.editSchedule;loadScheduleInputs();el.focus();window.scrollTo({top:0,behavior:"smooth"});return}
  const pedit=ev.target.closest("[data-edit-priority]");
@@ -253,7 +273,8 @@ document.getElementById("menu-toggle").addEventListener("click",function(){const
 document.getElementById("mobile-nav").addEventListener("click",ev=>{if(ev.target.closest("a")){document.getElementById("mobile-nav").hidden=true;document.getElementById("menu-toggle").setAttribute("aria-expanded","false")}});
 document.getElementById("reset-demo").addEventListener("click",()=>{if(!confirm("Reset all simulated submissions, votes and schedules in this browser tab?"))return;sessionStorage.removeItem("fusionpolicy-demo-v2");state=initial();defaultDemoBallots();seedPriorityPreview();route();toast("Preview reset.")});
 window.addEventListener("hashchange",()=>{filters={q:"",domain:"",newOnly:false,priorityOnly:false};route()});
-fetch("./policies.json").then(r=>{if(!r.ok)throw Error("Policy data unavailable");return r.json()}).then(data=>{
+Promise.all([fetch("./policies.json").then(r=>{if(!r.ok)throw Error("Policy data unavailable");return r.json()}),fetch("./consultation-config.json").then(r=>{if(!r.ok)throw Error("Consultation configuration unavailable");return r.json()})]).then(([data,config])=>{
+ consultationConfig=config;
  policies=data.policies||[];if(policies.length!==76)throw Error("Expected 76 policies but found "+policies.length);
  state=loadState();defaultDemoBallots();seedPriorityPreview();route();
 }).catch(err=>{root.innerHTML='<div class="panel"><h2>Could not load policies</h2><p>'+escape(err.message)+'</p><p>Check that index.html, app.js and policies.json are published together.</p></div>'});
