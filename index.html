@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#17121d" />
-  <meta name="description" content="Policy consultation and formal member approval — demonstration portal." />
-  <title>Reclaim | Policy Consultation (Demo)</title>
+  <meta name="theme-color" content="#1a0029" />
+  <meta name="description" content="Fusion Party of Australia members-only policy review portal: consultation, amendments and formal policy approval ballot preview." />
+  <title>Members-only Policy Review | Fusion Party of Australia · Reclaim</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -16,25 +16,26 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="wordmark" href="#home" aria-label="Reclaim consultation home">
-        <span class="brand-block">R<span class="brand-dot">.</span></span>
-        <span class="wordmark-text">RECLAIM <small>POLICY CONSULTATION</small></span>
+        <span class="brand-block" aria-hidden="true">R<span class="brand-dot">.</span></span>
+        <span class="wordmark-text">RECLAIM <small>FUSION PARTY AUSTRALIA</small></span>
       </a>
       <nav class="topnav" aria-label="Primary navigation">
         <a href="#home" data-nav="home">Overview</a>
         <a href="#library" data-nav="library">Policy library</a>
         <a href="#ballots" data-nav="ballots">Formal ballots</a>
         <a href="#participation" data-nav="participation">My activity</a>
-        <a href="#admin" data-nav="admin">Admin preview</a>
+        <a class="admin-nav" href="#admin" data-nav="admin">Administrator</a>
       </nav>
       <button class="menu-toggle" type="button" id="menu-toggle" aria-expanded="false" aria-controls="mobile-nav">Menu ☰</button>
     </div>
     <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" hidden>
-      <a href="#home">Overview</a><a href="#library">Policy library</a><a href="#ballots">Formal ballots</a><a href="#participation">My activity</a><a href="#admin">Admin preview</a>
+      <a href="#home">Overview</a><a href="#library">Policy library</a><a href="#ballots">Formal ballots</a><a href="#participation">My activity</a><a href="#admin">Administrator</a>
     </nav>
   </header>
+  <div class="member-banner"><div class="shell member-banner-inner"><span>FUSION PARTY OF AUSTRALIA</span><strong>MEMBERS-ONLY POLICY REVIEW PORTAL</strong><small>Public design preview — member access control pending</small></div></div>
   <div class="demo-bar"><div class="shell demo-inner"><strong>DESIGN PREVIEW · NOT A LIVE BALLOT</strong><span>Simulated login, submissions and votes. No backend is connected.</span><button type="button" class="demo-reset" id="reset-demo">Reset preview</button></div></div>
   <main id="main" class="shell" tabindex="-1"><div class="loading"><div class="spinner"></div><p>Loading policy catalogue…</p></div></main>
-  <footer class="site-footer"><div class="shell footer-inner"><div><strong>RECLAIM / POLICY CONSULTATION</strong><p>Independent prototype · Not an official record of member decisions</p></div><div><a href="#library">Browse policies</a><a href="#ballots">Approval ballots</a><a href="#admin">Administration</a></div></div></footer>
+  <footer class="site-footer"><div class="shell footer-inner"><div><strong>RECLAIM · FUSION PARTY OF AUSTRALIA</strong><p>Members-only policy review portal · Public design prototype until authentication is added</p></div><div><a href="#library">Browse policies</a><a href="#ballots">Approval ballots</a><a href="#admin">Administration</a></div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./app.js" defer></script>
 </body>
