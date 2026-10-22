@@ -32,7 +32,20 @@ jobs:
           assert sum(bool(p.get('isNew')) for p in data['policies']) == 23, 'Expected 23 new policies'
           assert len({p['id'] for p in data['policies']}) == 76
           assert all(p.get('title') and p.get('statement') for p in data['policies'])
-          print('Policy dataset validated')
+          with open('consultation-config.json', encoding='utf-8') as f:
+              config = json.load(f)
+          expected = {'Solve the Housing Crisis': 10, 'Renew Our Democracy': 8,
+                      'Build up Small Businesses': 8, 'Rebuild Our Communities': 10}
+          areas = {item['domain'] for item in config['areas']}
+          assert areas == set(expected), f'Unexpected areas: {areas}'
+          for domain, count in expected.items():
+              assert sum(p['domain'] == domain for p in data['policies']) == count, domain
+          assert config['timezone'] == 'Australia/Sydney'
+          assert config['openingInclusiveUtc'] == '2026-10-25T13:00:00.000Z'
+          assert config['closingExclusiveUtc'] == '2026-11-26T13:00:00.000Z'
+          assert config['meeting']['date'] == 'Sunday, 29 November 2026'
+          assert (config['meeting']['starts'],config['meeting']['ends']) == ('18:00','20:00')
+          print('Validated 76 policy proposals, 36 first-round policy ballots, four areas and dates')
           PY
       - name: Configure Pages
         uses: actions/configure-pages@v5
