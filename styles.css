@@ -182,3 +182,46 @@ hr{border-top-color:var(--border)}
 }
 @media(max-width:500px){.hero p{font-size:16px}.btn{font-size:14px}.demo-reset{margin-left:0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.domain-card{transition:none}}
+
+
+/* October 26–November 26 priority consultation round and member orientation */
+.notice-feature,.instructions-box,.meeting-announcement{margin:28px 0 34px;padding:31px 33px;border:1px solid rgba(255,255,255,.19);background:#2e004d}
+.notice-feature{border-top:5px solid #00ddb8;background:linear-gradient(120deg,#2e004d,#250b39)}
+.notice-feature h2,.instructions-box h2,.meeting-announcement h2{font-family:var(--heading);font-size:clamp(29px,3.7vw,44px);margin:12px 0 17px;line-height:1.06;color:#fff}
+.notice-feature>p{font-size:17px;color:#eee4f1;max-width:800px}
+.notice-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.priority-area-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:24px 0 6px}
+.priority-area-card{background:#1a0029;border:1px solid rgba(255,255,255,.26);border-left:4px solid #00ddb8;padding:21px 24px;min-width:0;box-shadow:0 9px 20px rgba(0,0,0,.18)}
+.priority-area-card h3{font-family:var(--heading);font-size:29px;line-height:1.03;margin:17px 0 19px;color:#fff;text-transform:uppercase}
+.priority-area-card .btn{font-size:12px;padding:10px 13px;min-height:40px}
+.priority-area-card .tags{display:flex;gap:8px;flex-wrap:wrap}
+.date-band{display:flex;gap:18px;justify-content:space-between;flex-wrap:wrap;border-block:1px solid rgba(255,255,255,.16);padding:11px 0;margin-bottom:13px;color:#fff;font-size:16px;font-family:var(--heading);font-weight:800}
+.date-band span strong{display:block;font:700 10px var(--mono);letter-spacing:.13em;color:#00ddb8;margin-bottom:3px}
+.meeting-announcement{border-left:6px solid #d428d4;background:linear-gradient(115deg,#3e155b,#280b3b)}
+.meeting-announcement .eyebrow{color:#00ddb8}
+.meeting-announcement .meeting-time{font:800 29px var(--heading);color:#fff;line-height:1.12}
+.meeting-announcement p{max-width:720px}
+.meet-placeholder{margin-top:20px;max-width:730px;border:1px dashed rgba(255,255,255,.45);padding:12px 15px;background:rgba(0,0,0,.12);color:#eee}
+.instructions-box{background:#261438;border-top:3px solid #d428d4}
+.instructions-box ol{padding-left:25px;max-width:1050px;color:#e6dfea}
+.instructions-box li{padding:7px 0 9px 4px;font-size:16px}
+.instructions-box li::marker{color:#00ddb8;font-family:var(--heading);font-weight:900;font-size:21px}
+.instructions-box a{color:#00ddb8;text-decoration:underline;text-underline-offset:3px}
+.instructions-box .note{border-top:1px solid var(--border);padding-top:15px;margin-bottom:0;color:#cec0d9}
+.ballot-dates{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:10px;color:#f4eefa;font-size:13px}
+.ballot-dates strong{color:#00ddb8}
+.filter-banner{margin-top:25px;padding:13px 18px;background:#412159;border-left:4px solid #00ddb8;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.filter-banner a{color:#00ddb8;font-weight:700}
+.access-gate{max-width:760px;margin:55px auto 90px;padding:8px 0}
+.access-gate h1{max-width:none;font-size:clamp(42px,6.4vw,76px);margin:16px 0}
+.access-gate>p{font-size:19px;color:#e7ddeb}
+.access-gate .panel{margin-top:24px;background:#2e004d}
+.access-gate .panel h2{font-size:29px}
+.access-gate .field input{font-size:16px}
+.access-gate .btn{white-space:normal}
+@media(max-width:730px){
+ .notice-feature,.instructions-box,.meeting-announcement{padding:23px 18px}
+ .priority-area-grid{grid-template-columns:1fr}
+ .priority-area-card{padding:18px}
+ .meeting-announcement .meeting-time{font-size:25px}
+}
