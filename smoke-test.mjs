@@ -42,7 +42,7 @@ await new Promise(resolve=>setImmediate(resolve));
 assert.match(root.innerHTML,/demo.member@fusionpolicy.invalid/,'Initial entry gate should be visible');
 for(const handler of listeners.submit||[])handler({target:{id:'demo-access-form',fields:{email:'demo.member@fusionpolicy.invalid'}},preventDefault(){}});
 assert.match(root.innerHTML,/FIRST PRIORITY BALLOT ROUND/);
-assert.match(root.innerHTML,/SUNDAY, 29 NOVEMBER 2026/);
+assert.match(root.innerHTML,/WEDNESDAY, 2 DECEMBER 2026/);
 for(const d of ['Solve the Housing Crisis','Renew Our Democracy','Build up Small Businesses','Rebuild Our Communities']){
  assert.ok(root.innerHTML.includes(d),'Homepage missing area '+d);
 }
