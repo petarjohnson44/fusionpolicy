@@ -41,7 +41,7 @@ The member-facing first-round consultation is configured in `consultation-config
 * Opens **Monday 26 October 2026 at 00:00 AEDT**, stored as UTC 2026-10-25T13:00:00Z.
 * Closes **Thursday 26 November 2026 at 23:59 AEDT** (the code uses the exclusive upper bound 2026-11-26T13:00:00Z = Friday 27 November at midnight AEDT).
 * The ballot index and each individual ballot show the start and end dates explicitly. Other new policies remain unscheduled.
-* The November review meeting is **Sunday 29 November 2026, 6:00–8:00 pm AEDT**, to review the ballot and make final recommendations to the Executive. Google Meet URL remains a placeholder.
+* The November review meeting is **Wednesday 2 December 2026, 6:00–8:00 pm AEDT**, to review the ballot and make final recommendations to the Executive. Google Meet URL remains a placeholder.
 
 ### Email-entry design versus real authentication
 
