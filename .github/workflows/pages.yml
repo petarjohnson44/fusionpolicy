@@ -43,7 +43,7 @@ jobs:
           assert config['timezone'] == 'Australia/Sydney'
           assert config['openingInclusiveUtc'] == '2026-10-25T13:00:00.000Z'
           assert config['closingExclusiveUtc'] == '2026-11-26T13:00:00.000Z'
-          assert config['meeting']['date'] == 'Sunday, 29 November 2026'
+          assert config['meeting']['date'] == 'Wednesday, 2 December 2026'
           assert (config['meeting']['starts'],config['meeting']['ends']) == ('18:00','20:00')
           print('Validated 76 policy proposals, 36 first-round policy ballots, four areas and dates')
           PY
