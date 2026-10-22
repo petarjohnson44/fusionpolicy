@@ -136,11 +136,11 @@ function adminRules(){
 }
 function notFound(){return pageHead("NOT FOUND","That page could not be found","Return to the policy library to continue.")+'<a class="btn primary" href="#library">Policy library →</a>'}
 function route(){
- const routeRaw=decodeURIComponent((location.hash||"#home").slice(1)),[main,arg]=routeRaw.split("/");
- root.innerHTML=main==="home"||!main?home():main==="library"?library(routeRaw):main==="policy"?policyDetails(arg):main==="contribute"?contribute(arg):main==="ballots"?ballotListing():main==="ballot"?ballotPage(arg):main==="participation"?activity():main==="admin"?admin():notFound();
- setActive(main);
- if(main==="library"){drawList();document.getElementById("search")?.addEventListener("input",e=>{filters.q=e.target.value;drawList()});document.getElementById("domain-filter")?.addEventListener("change",e=>{filters.domain=e.target.value;drawList()});document.getElementById("new-filter")?.addEventListener("change",e=>{filters.newOnly=e.target.value==="new";drawList()})}
- if(main==="admin"&&adminTab==="ballots")loadScheduleInputs();
+ const routeRaw=decodeURIComponent((location.hash||"#home").slice(1));const [main,arg]=routeRaw.split("/");const view=main.split("?")[0];
+ root.innerHTML=view==="home"||!view?home():view==="library"?library(routeRaw):view==="policy"?policyDetails(arg):view==="contribute"?contribute(arg):view==="ballots"?ballotListing():view==="ballot"?ballotPage(arg):view==="participation"?activity():view==="admin"?admin():notFound();
+ setActive(view);
+ if(view==="library"){drawList();document.getElementById("search")?.addEventListener("input",e=>{filters.q=e.target.value;drawList()});document.getElementById("domain-filter")?.addEventListener("change",e=>{filters.domain=e.target.value;drawList()});document.getElementById("new-filter")?.addEventListener("change",e=>{filters.newOnly=e.target.value==="new";drawList()})}
+ if(view==="admin"&&adminTab==="ballots")loadScheduleInputs();
  window.scrollTo({top:0,behavior:"instant"});
 }
 function loadScheduleInputs(){
