@@ -1,0 +1,45 @@
+name: Publish policy consultation preview
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check app.js
+      - name: Check source JSON and policy count
+        run: |
+          python3 -m json.tool policies.json >/dev/null
+          python3 - <<'PY'
+          import json
+          with open('policies.json', encoding='utf-8') as f:
+              data = json.load(f)
+          assert len(data['policies']) == 76, 'Expected 76 policy proposals'
+          assert sum(bool(p.get('isNew')) for p in data['policies']) == 23, 'Expected 23 new policies'
+          assert len({p['id'] for p in data['policies']}) == 76
+          assert all(p.get('title') and p.get('statement') for p in data['policies'])
+          print('Policy dataset validated')
+          PY
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
