@@ -72,7 +72,7 @@ function home(){
  return h;
 }
 function listTemplate(p){
- return '<a class="policy-item '+(isPriority(p,"policy")?"priority-record":"")+'" href="'+url(p.id)+'"><div><div class="tags"><span class="pill gray">'+escape(p.id)+'</span>'+priorityBadge(p,"policy")+ (p.isNew?badge("New"):"")+'<span class="pill purple">'+escape(p.domain)+'</span></div><strong>'+escape(p.title)+'</strong><p>'+escape(short(p.statement,220))+'</p></div><span class="arrow">↗</span></a>';
+ return '<a class="policy-item '+(isPriority(p,"policy")?"priority-record":"")+'" href="'+url(p.id)+'"><div><div class="tags"><span class="pill gray">'+escape(p.id)+'</span>'+priorityBadge(p,"policy")+ (p.isNew?badge("New"):"")+'<span class="pill purple">'+escape(p.domain)+'</span>'+(isPriorityArea(p)?'<span class="pill mint">BALLOT · 26 OCT–26 NOV 2026</span>':'')+'</div><strong>'+escape(p.title)+'</strong><p>'+escape(short(p.statement,220))+'</p></div><span class="arrow">↗</span></a>';
 }
 function library(route){
  const query=route.split("?")[1]||"";const params=new URLSearchParams(query);
